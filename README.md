@@ -54,7 +54,18 @@ header p{margin-top:6px;color:#666;font-size:14px}
 .card.loaded{opacity:1}
 .card:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,0.06)}
 
-.card img{width:32px;height:32px;aspect-ratio:1/1;object-fit:contain;border-radius:6px;margin-bottom:6px;background:#f6f6f6;padding:4px;display:block}
+/* Default card icons */
+.card img:not(.yt-thumb) {
+  width: 32px;
+  height: 32px;
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  background: #f6f6f6;
+  padding: 4px;
+  display: block;
+}
 
 .card h3{margin:4px 0 4px;font-size:14px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 .card p{margin:0;font-size:12px;color:#666;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
@@ -494,6 +505,25 @@ function getYouTubeID(url) {
   }
 }
 
+async function fetchYouTubeMeta(videoID) {
+  const api = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoID}`;
+
+  try {
+    const res = await fetch(api);
+    const json = await res.json();
+
+    return {
+      title: json.title || "YouTube Video",
+      description: json.author_name || "",
+    };
+  } catch (e) {
+    return {
+      title: "YouTube Video",
+      description: "",
+    };
+  }
+}
+
 function fillCard(card, info, url) {
   const domain = new URL(url).hostname;
   const fallback = domain.replace("www.", "");
@@ -513,57 +543,61 @@ function fillCard(card, info, url) {
     `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
   // ⭐ YOUTUBE CARD HANDLING
-if (isYouTube(url)) {
+  if (isYouTube(url)) {
     const videoID = getYouTubeID(url);
-
-    // ⭐ DIAGNOSTIC LOG — ADD THIS
-    console.log("VIDEO ID:", videoID, "URL:", url);
-
     const thumbnail = `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
 
-    card.classList.remove("skeleton");
-    card.innerHTML = `
-      <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
-        <img src="${thumbnail}" style="width:100%; display:block; border-radius:8px;">
-        <div style="
-          position:absolute;
-          inset:0;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          background:rgba(0,0,0,0.35);
-        ">
+    // Fetch YouTube metadata
+    fetchYouTubeMeta(videoID).then(meta => {
+      const ytTitle = meta.title;
+      const ytDesc = meta.description;
+
+      card.classList.remove("skeleton");
+      card.innerHTML = `
+        <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
+          <img class="yt-thumb" src="${thumbnail}" style="width:100%; display:block; border-radius:8px;">
           <div style="
-            width:60px;
-            height:60px;
-            border-radius:50%;
-            background:white;
+            position:absolute;
+            inset:0;
             display:flex;
             align-items:center;
             justify-content:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.25);
+            background:rgba(0,0,0,0.35);
           ">
             <div style="
-              width:0;
-              height:0;
-              border-top:12px solid transparent;
-              border-bottom:12px solid transparent;
-              border-left:18px solid red;
-              margin-left:4px;
-            "></div>
+              width:60px;
+              height:60px;
+              border-radius:50%;
+              background:white;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              box-shadow:0 4px 12px rgba(0,0,0,0.25);
+            ">
+              <div style="
+                width:0;
+                height:0;
+                border-top:12px solid transparent;
+                border-bottom:12px solid transparent;
+                border-left:18px solid red;
+                margin-left:4px;
+              "></div>
+            </div>
           </div>
         </div>
-      </div>
-      <h3>${title}</h3>
-      <p>${description}</p>
-    `;
+        <h3>${ytTitle}</h3>
+        <p>${ytDesc}</p>
+      `;
 
-    card.onclick = (event) => {
-      event.stopPropagation();
-      openYouTubeModal(videoID, title);
-    };
+      // prevent column expansion
+      card.onclick = (event) => {
+        event.stopPropagation();
+        openYouTubeModal(videoID, ytTitle);
+      };
 
-    requestAnimationFrame(() => card.classList.add("loaded"));
+      requestAnimationFrame(() => card.classList.add("loaded"));
+    });
+
     return;
   }
 
