@@ -451,7 +451,7 @@ const data = [
   title: "What is Machine Learning?",
   description: "A short introduction to machine learning concepts.",
   thumbnail: "https://img.youtube.com/vi/aircAruvnKk/hqdefault.jpg"
-}
+  }
 ];
 
 async function fetchPreview(site) {
