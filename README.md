@@ -458,7 +458,7 @@ const data = [
   {"url":"https://oklahoma.gov/careertech.html","category":"Career Tech"},
   {"url":"https://www.apprenticeship.gov/","category":"Career Tech"},
   {"url":"https://www.jobcorps.gov/","category":"Career Tech"},
-  {"url":"https://www.youtube.com/watch?v=aircAruvnKk","category":"Career Tech"}
+  {"url":"https://youtu.be/aircAruvnKk", "category":"Career Tech"}
 ];
 
 async function fetchPreview(site) {
