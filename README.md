@@ -662,7 +662,7 @@ const previewPromises = data.map(site =>
   }
   const item=skeletonMap.find(s=>s.site.url===site.url);
   if(item){
-    fillCard(item.card,preview,site.url);
+    fillCard(item.card, { ...preview, ...site }, site.url);
   }
  });
 }
