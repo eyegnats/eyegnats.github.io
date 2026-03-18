@@ -558,7 +558,6 @@ function fillCard(card, info, url) {
     const videoID = getYouTubeID(url);
     const thumbnail = `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
 
-    // Fetch YouTube metadata
     fetchYouTubeMeta(videoID).then(meta => {
       const ytTitle = meta.title;
       const ytDesc = meta.description;
@@ -600,7 +599,6 @@ function fillCard(card, info, url) {
         <p>${ytDesc}</p>
       `;
 
-      // prevent column expansion
       card.onclick = (event) => {
         event.stopPropagation();
         openYouTubeModal(videoID, ytTitle);
