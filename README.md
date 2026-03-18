@@ -445,7 +445,12 @@ const data = [
   {"url":"https://oklahoma.gov/careertech.html","category":"Career Tech"},
   {"url":"https://www.apprenticeship.gov/","category":"Career Tech"},
   {"url":"https://www.jobcorps.gov/","category":"Career Tech"},
-  {"url":"https://youtu.be/aircAruvnKk", "category":"Career Tech"}
+  {
+  url: "https://youtu.be/aircAruvnKk",
+  category: "Career Tech",
+  title: "What is Machine Learning?",
+  thumbnail: getYouTubeThumbnail("https://youtu.be/aircAruvnKk")
+  }
 ];
 
 async function fetchPreview(site) {
@@ -553,67 +558,69 @@ function fillCard(card, info, url) {
     info.favicon ||
     `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
-  // ⭐ YOUTUBE CARD HANDLING
-  if (isYouTube(url)) {
-    const videoID = getYouTubeID(url);
-    const thumbnail = `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
+// ⭐ YOUTUBE CARD HANDLING (manual-first)
+if (isYouTube(url)) {
+  const videoID = getYouTubeID(url);
 
-    fetchYouTubeMeta(videoID).then(meta => {
-      const ytTitle = meta.title;
-      const ytDesc = meta.description;
+  // Use manual thumbnail if provided, otherwise fallback
+  const thumbnail = info.thumbnail
+    ? info.thumbnail
+    : `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
 
-      card.classList.remove("skeleton");
-      card.innerHTML = `
-        <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
-          <img 
-            class="yt-thumb"
-            src="${thumbnail}"
-            referrerpolicy="no-referrer"
-            style="width:100%; display:block; border-radius:8px;"
-          >
+  // Use manual title/description if provided
+  const ytTitle = info.title || "YouTube Video";
+  const ytDesc = info.description || "";
+
+  card.classList.remove("skeleton");
+  card.innerHTML = `
+    <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
+      <img 
+        class="yt-thumb"
+        src="${thumbnail}"
+        referrerpolicy="no-referrer"
+        style="width:100%; display:block; border-radius:8px;"
+      >
+      <div style="
+        position:absolute;
+        inset:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:rgba(0,0,0,0.35);
+      ">
+        <div style="
+          width:60px;
+          height:60px;
+          border-radius:50%;
+          background:white;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          box-shadow:0 4px 12px rgba(0,0,0,0.25);
+        ">
           <div style="
-            position:absolute;
-            inset:0;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:rgba(0,0,0,0.35);
-          ">
-            <div style="
-              width:60px;
-              height:60px;
-              border-radius:50%;
-              background:white;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-              box-shadow:0 4px 12px rgba(0,0,0,0.25);
-            ">
-              <div style="
-                width:0;
-                height:0;
-                border-top:12px solid transparent;
-                border-bottom:12px solid transparent;
-                border-left:18px solid red;
-                margin-left:4px;
-              "></div>
-            </div>
-          </div>
+            width:0;
+            height:0;
+            border-top:12px solid transparent;
+            border-bottom:12px solid transparent;
+            border-left:18px solid red;
+            margin-left:4px;
+          "></div>
         </div>
-        <h3>${ytTitle}</h3>
-        <p>${ytDesc}</p>
-      `;
+      </div>
+    </div>
+    <h3>${ytTitle}</h3>
+    <p>${ytDesc}</p>
+  `;
 
-      card.onclick = (event) => {
-        event.stopPropagation();
-        openYouTubeModal(videoID, ytTitle);
-      };
+  card.onclick = (event) => {
+    event.stopPropagation();
+    openYouTubeModal(videoID, ytTitle);
+  };
 
-      requestAnimationFrame(() => card.classList.add("loaded"));
-    });
-
-    return;
-  }
+  requestAnimationFrame(() => card.classList.add("loaded"));
+  return;
+}
 
   // ⭐ NON-YOUTUBE CARD HANDLING
   card.classList.remove("skeleton");
@@ -630,6 +637,12 @@ function fillCard(card, info, url) {
   card.onclick = () => window.open(url, "_blank");
 
   requestAnimationFrame(() => card.classList.add("loaded"));
+}
+
+function getYouTubeThumbnail(url) {
+  const id = getYouTubeID(url);
+  if (!id) return null;
+  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
 }
 
 async function init(){
