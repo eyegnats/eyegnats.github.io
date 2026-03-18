@@ -29,11 +29,26 @@ header h1{margin:0;font-size:28px;font-weight:600;letter-spacing:-0.02em}
 header p{margin-top:6px;color:#666;font-size:14px}
 
 /* responsive column layout */
-.container{display:grid;grid-template-columns:repeat(4,220px);justify-content:center;gap:18px;padding:24px;box-sizing:border-box;flex:1;overflow:hidden}
-@media (max-width:1000px){.container{grid-template-columns:repeat(2,220px)}}
-@media (max-width:520px){.container{grid-template-columns:1fr;justify-items:center}}
+.container{display:grid;grid-template-columns: repeat(4, 260px);justify-content:center;gap:18px;padding:24px;box-sizing:border-box;flex:1;overflow-y: auto;overflow:hidden}
+@media (max-width: 1200px) {
+  .container { grid-template-columns: repeat(3, 260px); }
+}
+@media (max-width: 900px) {
+  .container { grid-template-columns: repeat(2, 260px); }
+}
+@media (max-width: 520px) {
+  .container { grid-template-columns: 1fr; justify-items: center; }
+}
 
-.column{background:#fff;border:1px solid #e8e8e8;border-radius:10px;padding:10px;height:100%;overflow-y:auto;overflow-x:hidden}
+.column {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 0 0 10px 0; /* remove top padding */
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
 .card{background:#fff;border:1px solid #ececec;border-radius:8px;margin-bottom:12px;padding:10px;cursor:pointer;transition:transform .08s ease,box-shadow .08s ease,opacity .35s ease;opacity:0}
 .card.loaded{opacity:1}
@@ -76,19 +91,225 @@ header p{margin-top:6px;color:#666;font-size:14px}
 
 
 /* column title card */
-.column-title{
-  font-size:16px;
-  font-weight:600;
-  text-align:center;
-  margin:0 0 10px 0;
-  padding:10px 8px;
-  border:1px solid #e9e9e9;
-  border-radius:8px;
-  background:#fafafa;
-  position:sticky;
-  top:0;
-  z-index:2;
+.column-title {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  padding: 18px 0; /* remove side padding */
+  width: 100%;     /* full width */
+  border-radius: 10px 10px 0 0;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  border-bottom: 1px solid #e0e0e0;
 }
+
+.column.expanded .sticky-header-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: #ffffff;
+}
+
+/* Expanded column mode */
+.column.expanded {
+  position: fixed;
+  overflow-y: auto;
+  z-index: 20;
+  grid-column: 1 / -1; /* span full width */
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0,0,0,0.15);
+  transform: scale(1.02);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Shrink other columns */
+.column.shrunk {
+  opacity: 0.25;
+  transform: scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Close button */
+.close-expanded {
+  position: sticky;
+  top: 6px;
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #eee;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  z-index: 20;
+}
+.close-expanded:hover {
+  background: #ddd;
+}
+
+/* Backdrop for dimming */
+#backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 5;
+}
+
+#backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Expanded column becomes a fullscreen panel */
+.column.expanded {
+  position: fixed;
+  top: 60px;        /* leaves room for header */
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(900px, 95vw);
+  height: calc(90vh - 80px);
+  overflow-y: auto;
+  background: white;
+  z-index: 20;
+  padding-bottom: 40px;
+  animation: slideFadeIn 0.35s ease forwards;
+  box-shadow: 0 0 25px rgba(0,0,0,0.25);
+  border-radius: 10px;
+}
+
+.column.expanded::-webkit-scrollbar-track {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Double-layer sticky header underlay */
+.column.expanded::before {
+  content: "";
+  position: absolute; /* not sticky */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: #ffffff;
+  z-index: 10; /* sits behind wrapper */
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.column.expanded::after {
+  content: "";
+  position: sticky;
+  top: 48px; /* same as ::before height */
+  height: 12px;
+  background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0));
+  z-index: 15;
+  display: block;
+}
+
+/* Slide + fade animation */
+@keyframes slideFadeIn {
+  from { transform: translate(-50%, -20px); opacity: 0; }
+  to   { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* Snap-back animation */
+@keyframes snapBack {
+  from { transform: translate(-50%, 0) scale(1.02); }
+  to   { transform: translate(-50%, 0) scale(1); }
+}
+
+.column.snap-back {
+  animation: snapBack 0.2s ease;
+}
+
+/* Shrink background columns */
+.column.shrunk {
+  opacity: 0.15;
+  transform: scale(0.96);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+/* Close button above expanded column */
+#close-expanded-btn {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  width: 42px;
+  height: 42px;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #d0d0d0;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.25s ease, transform 0.15s ease;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#close-expanded-btn:hover {
+  transform: scale(1.08);
+  background: #f7f7f7;
+}
+
+#close-expanded-btn.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sticky header inside expanded column */
+.column.expanded .column-title {
+  position: sticky;
+  top: 0;
+  background: #ffffff; /* solid white */
+  padding: 18px 0;
+  border-radius: 10px 10px 0 0;
+  width: 100%;
+  z-index: 70;
+  border-bottom: 1px solid #dcdcdc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* stronger separation */
+
+}
+
+/* Shorter scrollbars everywhere */
+*::-webkit-scrollbar {
+  width: 10px;   /* normal thickness */
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  background-clip: content-box; /* allows padding to shorten track */
+  padding-top: 12px;            /* shortens scrollbar */
+  padding-bottom: 12px;         /* shortens scrollbar */
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+
+
 
 </style>
 </head>
@@ -106,6 +327,8 @@ header p{margin-top:6px;color:#666;font-size:14px}
 </header>
 
 <div class="container" id="columns"></div>
+<div id="backdrop"></div>
+<div id="close-expanded-btn">×</div>
 
 <script>
 
@@ -248,14 +471,22 @@ async function init(){
   const col=document.createElement("div");
   col.className="column";
 
-  const header=document.createElement("h2");
-  header.textContent=title;
-  header.className="column-title";
+const headerWrapper = document.createElement("div");
+headerWrapper.className = "sticky-header-wrapper";
+
+const header = document.createElement("h2");
+header.textContent = title;
+header.className = "column-title";
+
+headerWrapper.appendChild(header);
+col.appendChild(headerWrapper);
 
   col.appendChild(header);
   columnsContainer.appendChild(col);
   columns[title]=col;
  });
+
+ enableColumnExpansion();
 
 const previewPromises = data.map(site =>
   fetchPreview(site).then(preview => ({ site, preview }))
@@ -283,6 +514,56 @@ const previewPromises = data.map(site =>
   }
  });
 }
+
+function enableColumnExpansion() {
+  const container = document.getElementById("columns");
+  const backdrop = document.getElementById("backdrop");
+  const closeBtn = document.getElementById("close-expanded-btn");
+  const columns = Array.from(container.getElementsByClassName("column"));
+
+  columns.forEach(col => {
+    const title = col.querySelector(".column-title");
+    title.style.cursor = "pointer";
+
+    title.addEventListener("click", () => {
+      if (col.classList.contains("expanded")) return;
+
+      // Smooth scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Shrink others
+      columns.forEach(c => {
+        if (c !== col) c.classList.add("shrunk");
+      });
+
+      // Expand this one
+      col.classList.add("expanded");
+
+      // Activate backdrop + close button
+      backdrop.classList.add("active");
+      closeBtn.classList.add("active");
+
+      // Close handler
+      closeBtn.onclick = () => collapseColumn(col, columns, backdrop, closeBtn);
+    });
+  });
+}
+
+function collapseColumn(col, allColumns, backdrop, closeBtn) {
+  col.classList.add("snap-back");
+
+  setTimeout(() => {
+    col.classList.remove("expanded", "snap-back");
+
+    allColumns.forEach(c => c.classList.remove("shrunk"));
+
+    backdrop.classList.remove("active");
+    closeBtn.classList.remove("active");
+  }, 180);
+}
+
+
+
 
 init();
 
