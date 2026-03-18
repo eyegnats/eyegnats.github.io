@@ -456,13 +456,14 @@ const data = [
 
 async function fetchPreview(site) {
   // Manual overrides take priority
-  if (site.title || site.description || site.favicon) {
-    return {
-      title: site.title || null,
-      description: site.description || null,
-      favicon: site.favicon || null
-    };
-  }
+if (site.title || site.description || site.favicon) {
+  return {
+    ...site,
+    title: site.title || null,
+    description: site.description || null,
+    favicon: site.favicon || null
+  };
+}
 
   // Otherwise fetch from Microlink
   const api = `https://api.microlink.io/?url=${encodeURIComponent(site.url)}`;
