@@ -328,7 +328,39 @@ header p{margin-top:6px;color:#666;font-size:14px}
 
 <div class="container" id="columns"></div>
 <div id="backdrop"></div>
+<!-- YOUTUBE MODAL -->
+<div id="youtube-modal" style="
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(800px, 90vw);
+  height: min(450px, 60vh);
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  display: none;
+  flex-direction: column;
+  z-index: 300;
+  overflow: hidden;
+">
+  <div style="
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid #ddd;
+  " id="youtube-modal-title"></div>
+
+  <iframe
+    id="youtube-iframe"
+    width="100%"
+    height="100%"
+    style="border:0; flex:1;"
+    allowfullscreen
+  ></iframe>
+</div>
 <div id="close-expanded-btn">×</div>
+
 
 <script>
 
@@ -390,7 +422,8 @@ const data = [
 
   {"url":"https://oklahoma.gov/careertech.html","category":"Career Tech"},
   {"url":"https://www.apprenticeship.gov/","category":"Career Tech"},
-  {"url":"https://www.jobcorps.gov/","category":"Career Tech"}
+  {"url":"https://www.jobcorps.gov/","category":"Career Tech"},
+  {"url":"https://www.youtube.com/watch?v=aircAruvnKk","category":"Career Tech"}
 ];
 
 async function fetchPreview(site) {
@@ -429,6 +462,38 @@ function createSkeletonCard(){
  return card;
 }
 
+function isYouTube(url) {
+  return (
+    url.includes("youtube.com") ||
+    url.includes("youtu.be")
+  );
+}
+
+function getYouTubeID(url) {
+  try {
+    const u = new URL(url);
+
+    // youtu.be/<id>
+    if (u.hostname === "youtu.be") {
+      return u.pathname.slice(1);
+    }
+
+    // youtube.com/watch?v=<id>
+    if (u.searchParams.get("v")) {
+      return u.searchParams.get("v");
+    }
+
+    // youtube.com/shorts/<id>
+    if (u.pathname.startsWith("/shorts/")) {
+      return u.pathname.split("/shorts/")[1];
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 function fillCard(card, info, url) {
   const domain = new URL(url).hostname;
   const fallback = domain.replace("www.", "");
@@ -447,16 +512,69 @@ function fillCard(card, info, url) {
     info.favicon ||
     `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
+  // ⭐ YOUTUBE CARD HANDLING
+  if (isYouTube(url)) {
+    const videoID = getYouTubeID(url);
+    const thumbnail = `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
+
+    card.classList.remove("skeleton");
+    card.innerHTML = `
+      <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
+        <img src="${thumbnail}" style="width:100%; display:block; border-radius:8px;">
+        <div style="
+          position:absolute;
+          inset:0;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          background:rgba(0,0,0,0.35);
+        ">
+          <div style="
+            width:60px;
+            height:60px;
+            border-radius:50%;
+            background:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.25);
+          ">
+            <div style="
+              width:0;
+              height:0;
+              border-top:12px solid transparent;
+              border-bottom:12px solid transparent;
+              border-left:18px solid red;
+              margin-left:4px;
+            "></div>
+          </div>
+        </div>
+      </div>
+      <h3>${title}</h3>
+      <p>${description}</p>
+    `;
+
+    // prevent column expansion
+    card.onclick = (event) => {
+      event.stopPropagation();
+      openYouTubeModal(videoID, title);
+    };
+
+    requestAnimationFrame(() => card.classList.add("loaded"));
+    return;
+  }
+
+  // ⭐ NON-YOUTUBE CARD HANDLING
   card.classList.remove("skeleton");
   card.innerHTML = `
-  <img loading="lazy" src="${favicon}"
-       onerror="this.src='https://www.google.com/s2/favicons?sz=128&domain=${domain}'" />
-  <h3>${title}</h3>
-  <p>${description}</p>
-  <p style="font-size:11px; color:#888; margin-top:6px; word-break:break-all;">
-    ${url}
-  </p>
-`;
+    <img loading="lazy" src="${favicon}"
+         onerror="this.src='https://www.google.com/s2/favicons?sz=128&domain=${domain}'" />
+    <h3>${title}</h3>
+    <p>${description}</p>
+    <p style="font-size:11px; color:#888; margin-top:6px; word-break:break-all;">
+      ${url}
+    </p>
+  `;
 
   card.onclick = () => window.open(url, "_blank");
 
@@ -481,7 +599,6 @@ header.className = "column-title";
 headerWrapper.appendChild(header);
 col.appendChild(headerWrapper);
 
-  col.appendChild(header);
   columnsContainer.appendChild(col);
   columns[title]=col;
  });
@@ -562,7 +679,41 @@ function collapseColumn(col, allColumns, backdrop, closeBtn) {
   }, 180);
 }
 
+function openYouTubeModal(videoID, title) {
+  const modal = document.getElementById("youtube-modal");
+  const iframe = document.getElementById("youtube-iframe");
+  const titleEl = document.getElementById("youtube-modal-title");
+  const backdrop = document.getElementById("backdrop");
 
+  titleEl.textContent = title;
+
+  // Show modal first (so it has real size)
+  modal.style.display = "flex";
+  backdrop.classList.add("active");
+
+  // Delay iframe load so YouTube sees correct dimensions
+  setTimeout(() => {
+    iframe.src = `https://www.youtube.com/embed/${videoID}`;
+  }, 50);
+
+  backdrop.onclick = closeYouTubeModal;
+}
+
+function closeYouTubeModal() {
+  const modal = document.getElementById("youtube-modal");
+  const iframe = document.getElementById("youtube-iframe");
+  const backdrop = document.getElementById("backdrop");
+
+  modal.style.display = "none";
+  backdrop.classList.remove("active");
+
+  // Clear AFTER hiding to avoid flicker
+  setTimeout(() => {
+    iframe.src = "";
+  }, 50);
+
+  backdrop.onclick = null;
+}
 
 
 init();
@@ -579,5 +730,6 @@ init();
     </div>
   </div>
 </footer>
+
 </body>
 </html>
