@@ -506,7 +506,7 @@ function getYouTubeID(url) {
 }
 
 async function fetchYouTubeMeta(videoID) {
-  const api = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoID}`;
+  const api = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoID}&format=json`;
 
   try {
     const res = await fetch(api);
