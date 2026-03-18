@@ -449,7 +449,7 @@ const data = [
   url: "https://youtu.be/aircAruvnKk",
   category: "Career Tech",
   title: "What is Machine Learning?",
-  thumbnail: getYouTubeThumbnail("https://youtu.be/aircAruvnKk")
+  thumbnail: "https://img.youtube.com/vi/aircAruvnKk/hqdefault.jpg"
   }
 ];
 
@@ -562,9 +562,8 @@ function fillCard(card, info, url) {
 if (isYouTube(url)) {
   const videoID = getYouTubeID(url);
 
-  const thumbnail = info.thumbnail || getYouTubeThumbnail(url);
+  const thumbnail = info.thumbnail;
   const ytTitle = info.title || "YouTube Video";
-  const ytDesc = info.description || "";
 
   card.classList.remove("skeleton");
   card.innerHTML = `
