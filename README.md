@@ -565,7 +565,7 @@ function fillCard(card, info, url) {
       card.classList.remove("skeleton");
       card.innerHTML = `
         <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
-          <img class="yt-thumb" referrerpolicy="no-referrer" src="${thumbnail}" style="width:100%; display:block; border-radius:8px;">
+          <img class="yt-thumb" referrerpolicy="no-referrer" style="width:100%; display:block; border-radius:8px;" src="${thumbnail}">
           <div style="
             position:absolute;
             inset:0;
