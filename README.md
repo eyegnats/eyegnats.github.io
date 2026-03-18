@@ -54,12 +54,28 @@ header p{margin-top:6px;color:#666;font-size:14px}
 .card.loaded{opacity:1}
 .card:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,0.06)}
 
+/* Default card icons */
+.card img:not(.yt-thumb) {
+  width: 32px;
+  height: 32px;
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  background: #f6f6f6;
+  padding: 4px;
+  display: block;
+}
+
+/* YouTube thumbnails override */
 .yt-thumb {
   width: 100% !important;
   height: auto !important;
   object-fit: cover !important;
   padding: 0 !important;
   background: none !important;
+  border-radius: 8px !important;
+  display: block !important;
 }
 
 /* Default card icons */
