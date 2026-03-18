@@ -513,8 +513,12 @@ function fillCard(card, info, url) {
     `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
   // ⭐ YOUTUBE CARD HANDLING
-  if (isYouTube(url)) {
+if (isYouTube(url)) {
     const videoID = getYouTubeID(url);
+
+    // ⭐ DIAGNOSTIC LOG — ADD THIS
+    console.log("VIDEO ID:", videoID, "URL:", url);
+
     const thumbnail = `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
 
     card.classList.remove("skeleton");
@@ -554,7 +558,6 @@ function fillCard(card, info, url) {
       <p>${description}</p>
     `;
 
-    // prevent column expansion
     card.onclick = (event) => {
       event.stopPropagation();
       openYouTubeModal(videoID, title);
