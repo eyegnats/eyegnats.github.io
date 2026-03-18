@@ -544,6 +544,7 @@ function fillCard(card, info, url) {
 // ⭐ YOUTUBE CARD HANDLING (manual-only)
 if (isYouTube(url)) {
   const videoID = getYouTubeID(url);
+  console.log("INFO RECEIVED BY YOUTUBE CARD:", info);
 
   const thumbnail = info.thumbnail;   // manual only
   const ytTitle = info.title || "YouTube Video";
