@@ -78,19 +78,6 @@ header p{margin-top:6px;color:#666;font-size:14px}
   display: block !important;
 }
 
-/* Default card icons */
-.card img:not(.yt-thumb) {
-  width: 32px;
-  height: 32px;
-  aspect-ratio: 1/1;
-  object-fit: contain;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  background: #f6f6f6;
-  padding: 4px;
-  display: block;
-}
-
 .card h3{margin:4px 0 4px;font-size:14px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 .card p{margin:0;font-size:12px;color:#666;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 
