@@ -449,8 +449,9 @@ const data = [
   url: "https://youtu.be/aircAruvnKk",
   category: "Career Tech",
   title: "What is Machine Learning?",
+  description: "A short introduction to machine learning concepts.",
   thumbnail: "https://img.youtube.com/vi/aircAruvnKk/hqdefault.jpg"
-  }
+}
 ];
 
 async function fetchPreview(site) {
@@ -521,25 +522,6 @@ function getYouTubeID(url) {
   }
 }
 
-async function fetchYouTubeMeta(videoID) {
-  const api = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoID}`;
-
-  try {
-    const res = await fetch(api);
-    const json = await res.json();
-
-    return {
-      title: json.title || "YouTube Video",
-      description: json.author_name || "",
-    };
-  } catch (e) {
-    return {
-      title: "YouTube Video",
-      description: "",
-    };
-  }
-}
-
 function fillCard(card, info, url) {
   const domain = new URL(url).hostname;
   const fallback = domain.replace("www.", "");
@@ -558,12 +540,13 @@ function fillCard(card, info, url) {
     info.favicon ||
     `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
-// ⭐ YOUTUBE CARD HANDLING (manual-first)
+// ⭐ YOUTUBE CARD HANDLING (manual-only)
 if (isYouTube(url)) {
   const videoID = getYouTubeID(url);
 
-  const thumbnail = info.thumbnail;
+  const thumbnail = info.thumbnail;   // manual only
   const ytTitle = info.title || "YouTube Video";
+  const ytDesc = info.description || "";
 
   card.classList.remove("skeleton");
   card.innerHTML = `
@@ -631,13 +614,7 @@ if (isYouTube(url)) {
   card.onclick = () => window.open(url, "_blank");
 
   requestAnimationFrame(() => card.classList.add("loaded"));
-}
-
-function getYouTubeThumbnail(url) {
-  const id = getYouTubeID(url);
-  if (!id) return null;
-  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-}
+};
 
 async function init(){
  const columnsContainer=document.getElementById("columns");
