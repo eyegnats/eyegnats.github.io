@@ -563,9 +563,7 @@ if (isYouTube(url)) {
   const videoID = getYouTubeID(url);
 
   // Use manual thumbnail if provided, otherwise fallback
-  const thumbnail = info.thumbnail
-    ? info.thumbnail
-    : `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
+  const thumbnail = info.thumbnail || getYouTubeThumbnail(url);
 
   // Use manual title/description if provided
   const ytTitle = info.title || "YouTube Video";
