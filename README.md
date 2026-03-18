@@ -54,6 +54,14 @@ header p{margin-top:6px;color:#666;font-size:14px}
 .card.loaded{opacity:1}
 .card:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,0.06)}
 
+.yt-thumb {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+  padding: 0 !important;
+  background: none !important;
+}
+
 /* Default card icons */
 .card img:not(.yt-thumb) {
   width: 32px;
@@ -555,7 +563,7 @@ function fillCard(card, info, url) {
       card.classList.remove("skeleton");
       card.innerHTML = `
         <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
-          <img class="yt-thumb" src="${thumbnail}" referrerpolicy="no-referrer" style="width:100%; display:block; border-radius:8px;">
+          <img class="yt-thumb" referrerpolicy="no-referrer" src="${thumbnail}" style="width:100%; display:block; border-radius:8px;">
           <div style="
             position:absolute;
             inset:0;
