@@ -656,7 +656,7 @@ const previewPromises = data.map(site =>
 
  const results = await Promise.all(previewPromises);
 
-results.forEach(({site,preview})=>{
+ results.forEach(({site,preview})=>{
   if(!preview.title){
     preview.title = new URL(site.url).hostname.replace("www.","");
   }
@@ -664,7 +664,7 @@ results.forEach(({site,preview})=>{
   if(item){
     fillCard(item.card, { ...preview, ...site }, site.url);
   }
-});
+ });
 }
 
 function enableColumnExpansion() {
