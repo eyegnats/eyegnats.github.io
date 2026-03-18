@@ -517,7 +517,7 @@ function getYouTubeID(url) {
 }
 
 async function fetchYouTubeMeta(videoID) {
-  const api = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoID}&format=json`;
+  const api = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoID}`;
 
   try {
     const res = await fetch(api);
@@ -565,7 +565,12 @@ function fillCard(card, info, url) {
       card.classList.remove("skeleton");
       card.innerHTML = `
         <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
-          <img class="yt-thumb" referrerpolicy="no-referrer" style="width:100%; display:block; border-radius:8px;" src="${thumbnail}">
+          <img 
+            class="yt-thumb"
+            src="${thumbnail}"
+            referrerpolicy="no-referrer"
+            style="width:100%; display:block; border-radius:8px;"
+          >
           <div style="
             position:absolute;
             inset:0;
