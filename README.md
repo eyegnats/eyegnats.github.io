@@ -5,31 +5,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Scholarship Opportunities</title>
 <style>
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;background:#ffffff;color:#111;display:flex;flex-direction:column;height:100vh} 
-.site-header{border-bottom:1px solid #e6e6e6;background:#fff;padding:20px}
 
-.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:20px}
 
-.header-image-wrap{flex:0 0 auto}
 
-.header-image-wrap img{width:120px;height:auto;display:block;border-radius:8px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;background:#ffffff;color:#111;display:flex;flex-direction:column;height:100vh;line-height: 1.5;} 
 
-.header-copy{flex:1}
+.site-header{border-bottom:1px solid #e6e6e6;background: linear-gradient(to right, #ffffff 60%, #f9f9f9);padding-top: 40px;padding-bottom: 20px;}
+
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch; /* image still fills height */
+  gap: 24px;
+}
+
+.header-image-wrap {
+  width: 240px;        /* consistent visual width */
+  flex-shrink: 0;
+  overflow: hidden;    /* enables cropping */
+  border-radius: 8px;
+}
+
+.header-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* crop instead of distort */
+  display: block;
+}
+
+.header-copy {
+  padding-top: 14px;
+  padding-bottom: 0; /* CRITICAL */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
 
 .header-copy h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-0.02em}
 
-.subtitle{margin-top:6px;color:#666;font-size:14px;line-height:1.4}
+.subtitle{margin-top:4px;margin-bottom: 6px;color:#666;font-size:18px;line-height:1.4}
 
-@media (max-width:600px){
-  .header-inner{flex-direction:column;align-items:flex-start}
-  .header-image-wrap img{width:100px}
+@media (max-width: 600px) {
+  .header-inner {
+    flex-direction: column;
+  }
+
+  .header-image-wrap {
+    width: 100%;
+    height: 180px;   /* banner height */
+  }
 }
+
 .header-image{display:block;margin:16px auto 8px auto;max-width:220px;height:auto}
 header h1{margin:0;font-size:28px;font-weight:600;letter-spacing:-0.02em}
 header p{margin-top:6px;color:#666;font-size:14px}
 
+.header-copy h1 {
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.header-copy h1::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 48px;
+  height: 4px;
+  border-radius: 2px;
+  background: #e63946; /* matches your bookmark heart */
+}
+
+
+.expand-tip {
+  font-size: 14px;
+  color: #888;
+  margin-top: auto;     /* pushes to image bottom */
+}
+
+
 /* responsive column layout */
-.container{display:grid;grid-template-columns: repeat(4, 260px);justify-content:center;gap:18px;padding:24px;box-sizing:border-box;flex:1;overflow-y: auto;overflow:hidden}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(4, 260px);
+  justify-content: center;
+  gap: 18px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
 @media (max-width: 1200px) {
   .container { grid-template-columns: repeat(3, 260px); }
 }
@@ -78,8 +147,8 @@ header p{margin-top:6px;color:#666;font-size:14px}
   display: block !important;
 }
 
-.card h3{margin:4px 0 4px;font-size:14px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
-.card p{margin:0;font-size:12px;color:#666;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.card h3{margin:4px 0 4px;font-size:18px;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.card p{margin:0;font-size:16px;color:#666;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 
 .skeleton{pointer-events:none;opacity:1}
 .skeleton div{border-radius:6px}
@@ -114,7 +183,7 @@ header p{margin-top:6px;color:#666;font-size:14px}
 
 /* column title card */
 .column-title {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
   margin: 0;
@@ -174,6 +243,38 @@ header p{margin-top:6px;color:#666;font-size:14px}
 }
 .close-expanded:hover {
   background: #ddd;
+}
+
+.bookmark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  color: #555;
+  z-index: 5;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.bookmark svg {
+  transition: transform 0.15s ease;
+}
+.bookmark.active svg {
+  transform: scale(1.1);
+}
+
+.bookmark:hover {
+  transform: scale(1.15);
+  color: #c1121f;
+}
+
+.bookmark.active {
+  color: #e63946;
+}
+
+.bookmark:not(.active) {
+  color: rgba(0,0,0,0.45);
 }
 
 /* Backdrop for dimming */
@@ -294,6 +395,25 @@ header p{margin-top:6px;color:#666;font-size:14px}
   pointer-events: auto;
 }
 
+#open-bookmarks {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+#open-bookmarks:hover {
+  background: #f5f5f5;
+}
+
+#close-bookmarks {
+  pointer-events: auto;
+  z-index: 401;
+}
+
 /* Sticky header inside expanded column */
 .column.expanded .column-title {
   position: sticky;
@@ -307,6 +427,38 @@ header p{margin-top:6px;color:#666;font-size:14px}
   box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* stronger separation */
 
 }
+
+.columns-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: flex-start;
+  column-gap: 16px;
+  padding: 0 24px;
+}
+
+.columns-actions {
+  justify-self: start;
+  margin-top: 24px;
+}
+
+
+/* Button styling (reuse your existing styles) */
+.columns-actions #open-bookmarks {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.columns-actions #open-bookmarks:hover {
+  background: #f5f5f5;
+}
+
+
 
 /* Shorter scrollbars everywhere */
 *::-webkit-scrollbar {
@@ -331,7 +483,47 @@ header p{margin-top:6px;color:#666;font-size:14px}
 }
 
 
+#bookmarks-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(420px, 100%);
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -8px 0 25px rgba(0,0,0,0.25);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+}
 
+#bookmarks-panel.active {
+  transform: translateX(0);
+}
+
+#bookmarks-header {
+  height: 56px;
+  padding: 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+#close-bookmarks {
+  font-size: 26px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+#bookmarks-content {
+  padding: 16px;
+  overflow-y: auto;
+}
 
 </style>
 </head>
@@ -343,12 +535,28 @@ header p{margin-top:6px;color:#666;font-size:14px}
     </div>
     <div class="header-copy">
       <h1>Scholarship Opportunities</h1>
-      <p class="subtitle">Check out all the links below to explore different options to help pay for your student's college or tech school education.</p>
+
+      <p class="subtitle">
+        Check out all the links below to explore different options to help pay for your student's college or tech school education.
+      </p>
+
+      <p class="expand-tip">
+        Tip: click any column title to expand it.
+      </p>
     </div>
   </div>
 </header>
 
-<div class="container" id="columns"></div>
+<div class="columns-row">
+  <div></div> <!-- left spacer -->
+
+  <div class="container" id="columns"></div>
+
+  <div class="columns-actions">
+    <button id="open-bookmarks">❤️ My Bookmarks</button>
+  </div>
+</div>
+
 <div id="backdrop"></div>
 <!-- YOUTUBE MODAL -->
 <div id="youtube-modal" style="
@@ -383,6 +591,35 @@ header p{margin-top:6px;color:#666;font-size:14px}
 </div>
 <div id="close-expanded-btn">×</div>
 
+<!-- Inline SVG templates -->
+<svg style="display:none;">
+  <symbol id="heart-outline" viewBox="0 0 24 24">
+    <path
+      d="M12.1 21.35l-1.1-1.02C5.14 15.36 2 12.28 2
+         8.5 2 5.42 4.42 3 7.5 3
+         c1.74 0 3.41.81 4.5 2.09
+         C13.09 3.81 14.76 3 16.5 3
+         19.58 3 22 5.42 22 8.5
+         c0 3.78-3.14 6.86-8.9 11.83z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linejoin="round"
+    />
+  </symbol>
+
+  <symbol id="heart-filled" viewBox="0 0 24 24">
+    <path
+      d="M12.1 21.35l-1.1-1.02C5.14 15.36 2 12.28 2
+         8.5 2 5.42 4.42 3 7.5 3
+         c1.74 0 3.41.81 4.5 2.09
+         C13.09 3.81 14.76 3 16.5 3
+         19.58 3 22 5.42 22 8.5
+         c0 3.78-3.14 6.86-8.9 11.83z"
+      fill="currentColor"
+    />
+  </symbol>
+</svg>
 
 <script>
 
@@ -457,12 +694,7 @@ const data = [
 async function fetchPreview(site) {
   // Manual overrides take priority
 if (site.title || site.description || site.favicon) {
-  return {
-    ...site,
-    title: site.title || null,
-    description: site.description || null,
-    favicon: site.favicon || null
-  };
+``
 }
 
   // Otherwise fetch from Microlink
@@ -523,101 +755,221 @@ function getYouTubeID(url) {
   }
 }
 
+const BOOKMARK_KEY = "bookmarkedCards";
+
+function getBookmarks() {
+  try {
+    return JSON.parse(localStorage.getItem(BOOKMARK_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function isBookmarked(url) {
+  return getBookmarks().includes(url);
+}
+
+function toggleBookmark(url) {
+  const bookmarks = getBookmarks();
+  const index = bookmarks.indexOf(url);
+
+  if (index >= 0) {
+    bookmarks.splice(index, 1);
+  } else {
+    bookmarks.push(url);
+  }
+
+  localStorage.setItem(
+    BOOKMARK_KEY,
+    JSON.stringify(bookmarks)
+  );
+}
+
+function getBookmarkedSites() {
+  const urls = getBookmarks();
+  return data.filter(item => urls.includes(item.url));
+}
+
+function renderBookmarksPanel() {
+  const container = document.getElementById("bookmarks-content");
+  container.innerHTML = "";
+
+  const bookmarks = getBookmarkedSites();
+
+  if (bookmarks.length === 0) {
+    container.innerHTML = `
+      <p style="color:#888; font-size:14px;">
+        No bookmarks yet.
+      </p>
+    `;
+    return;
+  }
+
+  bookmarks.forEach(site => {
+    const card = createSkeletonCard();
+    container.appendChild(card);
+
+    fetchPreview(site).then(preview => {
+      fillCard(card, { ...preview, ...site }, site.url);
+    });
+  });
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const openBtn = document.getElementById("open-bookmarks");
+  const closeBtn = document.getElementById("close-bookmarks");
+  const panel = document.getElementById("bookmarks-panel");
+  const backdrop = document.getElementById("backdrop");
+
+  openBtn.onclick = () => {
+    renderBookmarksPanel();
+    panel.classList.add("active");
+    backdrop.classList.add("active");
+  };
+
+  closeBtn.onclick = closeBookmarks;
+  backdrop.onclick = closeBookmarks;
+});
+
+
+function closeBookmarks() {
+  const panel = document.getElementById("bookmarks-panel");
+  const backdrop = document.getElementById("backdrop");
+
+  panel.classList.remove("active");
+  backdrop.classList.remove("active");
+}
+
 function fillCard(card, info, url) {
   const domain = new URL(url).hostname;
   const fallback = domain.replace("www.", "");
 
-  const title =
-    info.title && info.title.trim()
-      ? info.title
-      : fallback;
-
-  const description =
-    info.description && info.description.trim()
-      ? info.description
-      : fallback;
-
-  const favicon =
-    info.favicon ||
+  const title = info.title?.trim() || fallback;
+  const description = info.description?.trim() || fallback;
+  const favicon = info.favicon ||
     `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
 
-// ⭐ YOUTUBE CARD HANDLING (manual-only)
-if (isYouTube(url)) {
-  console.log("INFO RECEIVED BY YOUTUBE CARD:", info);
-  
-  const videoID = getYouTubeID(url);
-
-  const thumbnail = info.thumbnail;   // manual only
-  const ytTitle = info.title || "YouTube Video";
-  const ytDesc = info.description || "";
-
   card.classList.remove("skeleton");
-  card.innerHTML = `
-    <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
-      <img 
-        class="yt-thumb"
-        src="${thumbnail}"
-        referrerpolicy="no-referrer"
-        style="width:100%; display:block; border-radius:8px;"
-      >
-      <div style="
-        position:absolute;
-        inset:0;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background:rgba(0,0,0,0.35);
-      ">
+  card.style.position = "relative";
+
+  /* ==========================
+     YOUTUBE CARD
+  ========================== */
+  if (isYouTube(url)) {
+    const videoID = getYouTubeID(url);
+    const bookmarked = isBookmarked(url);
+
+    card.innerHTML = `
+      <div class="bookmark ${bookmarked ? "active" : ""}">
+        ${heartSVG(bookmarked)}
+      </div>
+
+      <div style="position:relative; border-radius:8px; overflow:hidden; margin-bottom:10px;">
+        <img
+          class="yt-thumb"
+          src="${info.thumbnail}"
+          referrerpolicy="no-referrer"
+        />
+
         <div style="
-          width:60px;
-          height:60px;
-          border-radius:50%;
-          background:white;
+          position:absolute;
+          inset:0;
           display:flex;
           align-items:center;
           justify-content:center;
-          box-shadow:0 4px 12px rgba(0,0,0,0.25);
+          background:rgba(0,0,0,0.35);
         ">
           <div style="
-            width:0;
-            height:0;
-            border-top:12px solid transparent;
-            border-bottom:12px solid transparent;
-            border-left:18px solid red;
-            margin-left:4px;
-          "></div>
+            width:60px;
+            height:60px;
+            border-radius:50%;
+            background:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.25);
+          ">
+            <div style="
+              width:0;
+              height:0;
+              border-top:12px solid transparent;
+              border-bottom:12px solid transparent;
+              border-left:18px solid red;
+              margin-left:4px;
+            "></div>
+          </div>
         </div>
       </div>
-    </div>
-    <h3>${ytTitle}</h3>
-    <p>${ytDesc}</p>
-  `;
 
-  card.onclick = (event) => {
-    event.stopPropagation();
-    openYouTubeModal(videoID, ytTitle);
-  };
+      <h3>${title}</h3>
+      <p>${description}</p>
+    `;
 
-  requestAnimationFrame(() => card.classList.add("loaded"));
-  return;
-}
+    const heart = card.querySelector(".bookmark");
 
-  // ⭐ NON-YOUTUBE CARD HANDLING
-  card.classList.remove("skeleton");
+    heart.onclick = (e) => {
+      e.stopPropagation();
+      toggleBookmark(url);
+      heart.classList.toggle("active");
+      heart.innerHTML = heartSVG(heart.classList.contains("active"));
+      renderBookmarksPanel();
+    };
+
+
+    card.onclick = (e) => {
+      e.stopPropagation();
+      openYouTubeModal(videoID, title);
+    };
+
+    requestAnimationFrame(() => card.classList.add("loaded"));
+    return;
+  }
+
+  /* ==========================
+     NORMAL LINK CARD
+  ========================== */
+  const bookmarked = isBookmarked(url);
+
   card.innerHTML = `
-    <img loading="lazy" src="${favicon}"
-         onerror="this.src='https://www.google.com/s2/favicons?sz=128&domain=${domain}'" />
+    <div class="bookmark ${bookmarked ? "active" : ""}" title="Bookmark">
+      ${heartSVG(bookmarked)}
+    </div>
+
+    <img
+      loading="lazy"
+      src="${favicon}"
+      onerror="this.src='https://www.google.com/s2/favicons?sz=128&domain=${domain}'"
+    />
+
     <h3>${title}</h3>
     <p>${description}</p>
-    <p style="font-size:11px; color:#888; margin-top:6px; word-break:break-all;">
+
+    <p style="
+      font-size:11px;
+      color:#888;
+      margin-top:6px;
+      word-break:break-all;
+    ">
       ${url}
     </p>
   `;
 
+
+  const heart = card.querySelector(".bookmark");
+
+  heart.onclick = (e) => {
+    e.stopPropagation();
+    toggleBookmark(url);
+    heart.classList.toggle("active");
+    heart.innerHTML = heartSVG(heart.classList.contains("active"));
+    renderBookmarksPanel();
+  };
+
   card.onclick = () => window.open(url, "_blank");
 
   requestAnimationFrame(() => card.classList.add("loaded"));
-};
+}
 
 async function init(){
  const columnsContainer=document.getElementById("columns");
@@ -753,8 +1105,35 @@ function closeYouTubeModal() {
   backdrop.onclick = null;
 }
 
+function heartSVG(isActive) {
+  return `
+    <svg viewBox="0 0 24 24" width="26" height="26">
+      <use href="#${isActive ? "heart-filled" : "heart-outline"}"></use>
+    </svg>
+  `;
+}
 
 init();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const openBtn = document.getElementById("open-bookmarks");
+  const closeBtn = document.getElementById("close-bookmarks");
+  const panel = document.getElementById("bookmarks-panel");
+  const backdrop = document.getElementById("backdrop");
+
+  openBtn.addEventListener("click", () => {
+    renderBookmarksPanel();
+    panel.classList.add("active");
+    backdrop.classList.add("active");
+  });
+
+  closeBtn.addEventListener("click", closeBookmarks);
+
+  backdrop.addEventListener("click", () => {
+    if (!panel.classList.contains("active")) return;
+    closeBookmarks();
+  });
+});
 
 </script>
 <footer class="site-footer">
@@ -768,6 +1147,15 @@ init();
     </div>
   </div>
 </footer>
+
+<div id="bookmarks-panel">
+  <div id="bookmarks-header">
+    <span>❤️ My Bookmarks</span>
+    <button id="close-bookmarks">×</button>
+  </div>
+
+  <div id="bookmarks-content"></div>
+</div>
 
 </body>
 </html>
