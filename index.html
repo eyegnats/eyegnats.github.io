@@ -93,10 +93,13 @@ header p{margin-top:6px;color:#666;font-size:14px}
 .container {
   display: grid;
   grid-template-columns: repeat(4, 260px);
+  grid-auto-rows: minmax(0, 1fr);
   justify-content: center;
   gap: 18px;
-  padding-top: 24px;
-  padding-bottom: 24px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  max-height: calc(100vh - 300px);
+  overflow: hidden;
 }
 
 @media (max-width: 1200px) {
@@ -114,7 +117,6 @@ header p{margin-top:6px;color:#666;font-size:14px}
   border: 1px solid #e8e8e8;
   border-radius: 10px;
   padding: 0 0 10px 0; /* remove top padding */
-  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
