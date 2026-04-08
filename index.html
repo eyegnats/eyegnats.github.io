@@ -99,7 +99,7 @@ header p{margin-top:6px;color:#666;font-size:14px}
   padding-top: 10px;
   padding-bottom: 10px;
   max-height: calc(100vh - 300px);
-  overflow: hidden;
+  overflow: visible;
 }
 
 @media (max-width: 1200px) {
@@ -113,13 +113,20 @@ header p{margin-top:6px;color:#666;font-size:14px}
 }
 
 .column {
-  background: #fff;
-  border: 1px solid #e8e8e8;
+  display: flex;
+  flex-direction: column;
   border-radius: 10px;
-  padding: 0 0 10px 0; /* remove top padding */
+  border: 1px solid #e8e8e8;
+  background: #ffffff;
+}
+
+.column-scroll {
+  flex: 1;                 /* fills remaining space */
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 10px;
 }
+
 
 .card{background:#fff;border:1px solid #ececec;border-radius:8px;margin-bottom:12px;padding:10px;cursor:pointer;transition:transform .08s ease,box-shadow .08s ease,opacity .35s ease;opacity:0}
 .card.loaded{opacity:1}
@@ -194,27 +201,21 @@ header p{margin-top:6px;color:#666;font-size:14px}
 }
 
 /* column title card */
+
 .column-title {
   font-size: 20px;
   font-weight: 600;
   text-align: center;
-  margin: 0;
-  padding: 18px 0; /* remove side padding */
-  width: 100%;     /* full width */
-  border-radius: 10px 10px 0 0;
-  background: #ffffff;
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-  border-bottom: 1px solid #e0e0e0;
-}
 
-.column.expanded .sticky-header-wrapper {
-  position: sticky;
-  top: 0;
-  z-index: 60;
-  background: #ffffff;
+  padding: 12px 12px;
+  margin: 0;
+
+  background: none;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 20px 20px 0 0
+
+  /* ✅ important: NOT sticky */
+  position: static;
 }
 
 /* Expanded column mode */
@@ -635,6 +636,8 @@ header p{margin-top:6px;color:#666;font-size:14px}
 
 <script>
 
+let activeExpandedColumn = null;
+
 const columnTitles = [
   "Scholarship Databases",
   "Scholarship Applications",
@@ -988,21 +991,22 @@ async function init(){
  const columns={};
 
  columnTitles.forEach(title=>{
-  const col=document.createElement("div");
-  col.className="column";
+  const col = document.createElement("div");
+  col.className = "column";
 
-const headerWrapper = document.createElement("div");
-headerWrapper.className = "sticky-header-wrapper";
+  const header = document.createElement("h2");
+  header.textContent = title;
+  header.className = "column-title";
 
-const header = document.createElement("h2");
-header.textContent = title;
-header.className = "column-title";
+  const scrollArea = document.createElement("div");
+  scrollArea.className = "column-scroll";
 
-headerWrapper.appendChild(header);
-col.appendChild(headerWrapper);
+  col.appendChild(header);
+  col.appendChild(scrollArea);
 
   columnsContainer.appendChild(col);
-  columns[title]=col;
+  columns[title] = scrollArea; // ✅ cards go here now
+
  });
 
  enableColumnExpansion();
@@ -1055,10 +1059,9 @@ function enableColumnExpansion() {
         if (c !== col) c.classList.add("shrunk");
       });
 
-      // Expand this one
       col.classList.add("expanded");
+      activeExpandedColumn = col;
 
-      // Activate backdrop + close button
       backdrop.classList.add("active");
       closeBtn.classList.add("active");
 
@@ -1078,6 +1081,8 @@ function collapseColumn(col, allColumns, backdrop, closeBtn) {
 
     backdrop.classList.remove("active");
     closeBtn.classList.remove("active");
+    
+    activeExpandedColumn = null;
   }, 180);
 }
 
@@ -1142,9 +1147,28 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.addEventListener("click", closeBookmarks);
 
   backdrop.addEventListener("click", () => {
-    if (!panel.classList.contains("active")) return;
-    closeBookmarks();
+    // ✅ If a column is expanded, close it
+    if (activeExpandedColumn) {
+      const columns = Array.from(
+        document.getElementById("columns").getElementsByClassName("column")
+      );
+
+      collapseColumn(
+        activeExpandedColumn,
+        columns,
+        backdrop,
+        document.getElementById("close-expanded-btn")
+      );
+
+      return;
+    }
+
+    // ✅ Otherwise, close bookmarks panel if open
+    if (panel.classList.contains("active")) {
+      closeBookmarks();
+    }
   });
+
 });
 
 </script>
