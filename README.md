@@ -173,15 +173,25 @@ header p{margin-top:6px;color:#666;font-size:14px}
 }
 
 /* footer */
-.site-footer{border-top:1px solid #e6e6e6;background:#fff;margin-top:20px}
-.footer-inner{max-width:900px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;gap:16px;justify-content:center}
-.footer-logo img{width:90px;height:auto;display:block}
-.footer-text{font-size:12px;color:#666}
-
-@media (max-width:600px){
-  .footer-inner{flex-direction:column;text-align:center}
+.floating-footer-logo {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+  opacity: 0.9;
 }
 
+.floating-footer-logo img {
+  width: 120px;   /* adjust size as desired */
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .floating-footer-logo img {
+    width: 100px;
+  }
+}
 
 /* column title card */
 .column-title {
@@ -1138,17 +1148,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 </script>
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-logo">
-      <img src="https://k20center.ou.edu/wp-content/uploads/2020/02/k20center-logo-full-1.png" alt="Footer logo" />
-    </div>
-    <div class="footer-text">
-      <div> </div>
-      <div> </div>
-    </div>
-  </div>
-</footer>
 
 <div id="bookmarks-panel">
   <div id="bookmarks-header">
@@ -1158,6 +1157,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   <div id="bookmarks-content"></div>
 </div>
+
+
+<div class="floating-footer-logo">
+  <img
+    src="https://k20center.ou.edu/wp-content/uploads/2020/02/k20center-logo-full-1.png"
+    alt="K20 Center logo"
+  />
+</div>
+
 
 </body>
 </html>
